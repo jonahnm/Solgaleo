@@ -290,7 +290,7 @@ void ACBYPASS(uintptr_t a1, uintptr_t a2, uintptr_t a3, uintptr_t a4, uintptr_t 
 }
 bool (*godmodetramp)(Game::Player*);
 bool godmode(Game::Player* a1) {
-    ﻿ @Shadów if (godmode_) { return true; }
+    if (godmode_) { return true; }
     else {
         godmodetramp(a1);
     }
