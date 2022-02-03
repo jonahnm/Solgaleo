@@ -57,7 +57,6 @@ using textwriterprintftype = void(sead::TextWriter*, const char*);
 textwriterprintftype* textwriterprintf;
 scenenametype* getcurscenename;
 ismastertype* ismaster;
-solgaleo::Access accessor = solgaleo::Access::GetAccess(s_shbuf);
 void exception_handler(nn::os::UserExceptionInfo* info) {}
 
 void stub() {}
@@ -262,7 +261,8 @@ void (*erasethingtramp)(uintptr_t a1, uintptr_t a2, uintptr_t a3, uintptr_t a4, 
 void erasething(uintptr_t a1, uintptr_t a2, uintptr_t a3, uintptr_t a4, uintptr_t a5, uintptr_t a6, uintptr_t a7,
                 uintptr_t a8, uintptr_t a9, uintptr_t a10, uintptr_t a11, uintptr_t a12, uintptr_t a13, uintptr_t a14,
                 uintptr_t a15, uintptr_t a16) {
-    if (accessor.buf.eraseinkenabled) {
+                  solgaleo::Access accessor = solgaleo::Access::GetAccess();
+    if (accessor.buf->eraseinkenabled) {
         erasethingtramp(3, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16);
     } else {
         erasethingtramp(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16);

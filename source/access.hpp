@@ -1,15 +1,16 @@
 #pragma once
 #include "buf_type.hpp"
+#include "buffer.hpp"
 namespace solgaleo {
 class Access {
        public:
-       static Access GetAccess(Buffer buf) {
+       static Access GetAccess() {
             Access A;
-            A.buf = buf;
+            A.buf = &s_shbuf;
             return A;
         };
-        solgaleo::Buffer buf;
-        Access() { buf.is_writing = true; };
-        ~Access() { buf.is_writing = false; };
+        solgaleo::Buffer* buf;
+        Access() { buf->is_writing = true; };
+        ~Access() { buf->is_writing = false; };
     };
 }
