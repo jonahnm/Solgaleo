@@ -80,6 +80,7 @@ SECTIONS
 
   /* App data */
   .data : {
+    KEEP(*(.data.shbuf));
     *(.data .data.*)
   } :data
 

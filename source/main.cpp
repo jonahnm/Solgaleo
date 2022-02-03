@@ -1,19 +1,13 @@
 #include "main.hpp"
 
 #include <assert.h>
-
-#include "imgui/imgui.cpp"
-#include "imgui/imgui_demo.cpp"
-#include "imgui/imgui_draw.cpp"
-#include "imgui/imgui_internal.h"
-#include "imgui/imgui_sw.cpp"
-#include "imgui/imgui_sw.hpp"
-#include "imgui/imgui_tables.cpp"
-#include "imgui/imgui_widgets.cpp"
 #include "macros.h"
 #include "skyline/logger/TcpLogger.hpp"
 #include "skyline/utils/ipc.hpp"
 #include "stuffineed.hpp"
+#include "buf_type.hpp"
+#include "buffer.hpp"
+#include "access.hpp"
 #define PATCH(off, data, type)                                                                                   \
     {                                                                                                            \
         skyline::inlinehook::ControlledPages pages((void*)(skyline::utils::g_MainTextAddr + off), sizeof(type)); \
@@ -36,7 +30,6 @@ bool showdestructive = false;
 bool oppositeink = false;
 Game::PlayerMgr* playermgr;
 Game::Player* player;
-ImGuiIO io;
 bool showfun = false;
 float wideness = 1.0;
 bool showwideness = false;
@@ -64,6 +57,7 @@ using textwriterprintftype = void(sead::TextWriter*, const char*);
 textwriterprintftype* textwriterprintf;
 scenenametype* getcurscenename;
 ismastertype* ismaster;
+solgaleo::Access accessor = solgaleo::Access::GetAccess(s_shbuf);
 void exception_handler(nn::os::UserExceptionInfo* info) {}
 
 void stub() {}
@@ -268,7 +262,7 @@ void (*erasethingtramp)(uintptr_t a1, uintptr_t a2, uintptr_t a3, uintptr_t a4, 
 void erasething(uintptr_t a1, uintptr_t a2, uintptr_t a3, uintptr_t a4, uintptr_t a5, uintptr_t a6, uintptr_t a7,
                 uintptr_t a8, uintptr_t a9, uintptr_t a10, uintptr_t a11, uintptr_t a12, uintptr_t a13, uintptr_t a14,
                 uintptr_t a15, uintptr_t a16) {
-    if (oppositeink) {
+    if (accessor.buf.eraseinkenabled) {
         erasethingtramp(3, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16);
     } else {
         erasethingtramp(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16);
@@ -315,12 +309,6 @@ void skyline_main() {
     Handle h;
     skyline::utils::Ipc::getOwnProcessHandle(&h);
     envSetOwnProcessHandle(h);
-    // setup Dear ImGui
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    imgui_sw::bind_imgui_painting();
-    ImGui::StyleColorsDark();
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
     // init hooking setup
     A64HookInit();
 

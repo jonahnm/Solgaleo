@@ -57,9 +57,9 @@ namespace Lp
 };
       class Ctrl{
          public:
-          __int32 dword0;
-          __int32 dword4;
-          __int64 qword8;
+          __int32_t dword0;
+          __int32_t dword4;
+          __int64_t qword8;
           Lp::Sys::CtrlData data[2];
       };
   };
